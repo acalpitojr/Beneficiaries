@@ -4,8 +4,11 @@ import com.calpito.beneficiaries.interfaces.RepositoryInterface
 import com.calpito.beneficiaries.model.Beneficiary
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.Provides
+import javax.inject.Inject
 
-object RepositoryImpl : RepositoryInterface {
+
+class RepositoryImpl @Inject constructor() : RepositoryInterface {
     //HARDCODED BENEFICARY DATA
     val testBeneficiaryJson = """[
   {

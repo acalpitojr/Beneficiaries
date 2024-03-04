@@ -1,4 +1,4 @@
-package com.calpito.currencyconvert.ui
+package com.calpito.beneficiaries
 
 import android.os.Bundle
 import android.text.Editable
@@ -110,6 +110,9 @@ class MainActivity : AppCompatActivity() {
         setupObservers()
         Log.d(TAG, "observers active")
 
+        //get initial data
+        mainViewModel.getBeneficiariesAndDisplay()
+
     }
 
     class recyclerViewAdapter : RecyclerView.Adapter<recyclerViewAdapter.ConversionsViewHolder>() {
@@ -150,15 +153,15 @@ class MainActivity : AppCompatActivity() {
         /*set view values*/
         override fun onBindViewHolder(holder: ConversionsViewHolder, position: Int) {
 
-            /*val item = differ.currentList[position]
-            holder.nameTextView.text = "${item.currencyCode}: ${item.currencyName}"
-
-            if(item.convertedPrice == INVALID_PRICE){
-                holder.priceTextView.text = ""
-            } else {
-                val roundedPrice = String.format("%.${Constants.PRICE_DECIMAL_PRECISION}f", item.convertedPrice)
-                holder.priceTextView.text = "${roundedPrice}"
-            }*/
+            val item = differ.currentList[position]
+            holder.nameTextView.text = "${item.firstName}: ${item.lastName}"
+            /*
+                        if(item.convertedPrice == INVALID_PRICE){
+                            holder.priceTextView.text = ""
+                        } else {
+                            val roundedPrice = String.format("%.${Constants.PRICE_DECIMAL_PRECISION}f", item.convertedPrice)
+                            holder.priceTextView.text = "${roundedPrice}"
+                        }*/
 
         }
 
@@ -203,8 +206,12 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setupRecyclerViewObserver() {
         //observe liveData from ViewModel
-        /*mainViewModel.convertedCurrencyList.observe(this, Observer { currencyResponseResource ->
-            when (currencyResponseResource.status) {
+        mainViewModel.beneficiaryList.observe(this, Observer { beneficiaryList ->
+
+            adapter.submitList(beneficiaryList)
+
+
+          /*  when (currencyResponseResource.status) {
                 Status.SUCCESS -> {
                     binding.progress.visibility = View.GONE
                     binding.rvConversions.visibility = View.VISIBLE
@@ -227,8 +234,8 @@ class MainActivity : AppCompatActivity() {
                     Snackbar.make(binding.rootView, "Something went wrong", Snackbar.LENGTH_SHORT)
                         .show()
                 }
-            }
-        })*/
+            }*/
+        })
     }
 
 
