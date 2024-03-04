@@ -9,15 +9,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val repository: RepositoryInterface): ViewModel() {
+class MainViewModel @Inject constructor(val repository: RepositoryInterface) : ViewModel() {
 
     //List for recyclerView
     private val _beneficiaryList = MutableLiveData<List<Beneficiary>>()
     val beneficiaryList: LiveData<List<Beneficiary>> = _beneficiaryList
 
-    fun getBeneficiariesAndDisplay(){
+    fun getBeneficiariesAndDisplay() {
         val benficiaries = repository.getBeneficiaryList()
+        //we want to interpret the designation code, lets add to its string
         _beneficiaryList.value = benficiaries
     }
+
 
 }

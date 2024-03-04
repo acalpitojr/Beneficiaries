@@ -1,7 +1,7 @@
 package com.calpito.beneficiaries.di
 
 import com.calpito.beneficiaries.interfaces.RepositoryInterface
-import com.calpito.beneficiaries.interfaces.repository.RepositoryImpl
+import com.calpito.beneficiaries.repository.RepositoryImpl
 
 import dagger.Module
 import dagger.Provides

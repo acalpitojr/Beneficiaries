@@ -1,6 +1,6 @@
 package com.calpito.beneficiaries
 
-import com.calpito.beneficiaries.interfaces.repository.RepositoryImpl
+import com.calpito.beneficiaries.repository.RepositoryImpl
 import org.junit.Test
 
 import org.junit.Assert.*

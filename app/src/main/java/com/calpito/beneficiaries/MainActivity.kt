@@ -120,11 +120,13 @@ class MainActivity : AppCompatActivity() {
         /*set up views*/
         inner class ConversionsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             internal var nameTextView: TextView
-            internal var priceTextView: TextView
+            internal var benefitType: TextView
+            internal var designation: TextView
 
             init {
                 nameTextView = itemView.findViewById(R.id.tv_name) as TextView
-                priceTextView = itemView.findViewById(R.id.tv_price) as TextView
+                benefitType = itemView.findViewById(R.id.tv_benefit_type) as TextView
+                designation = itemView.findViewById(R.id.tv_designation) as TextView
             }
         }
 
@@ -141,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 LayoutInflater.from(
                     parent.context
                 ).inflate(
-                    R.layout.converted_item, parent, false
+                    R.layout.beneficiary_item, parent, false
                 )
             )
         }
@@ -154,7 +156,9 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ConversionsViewHolder, position: Int) {
 
             val item = differ.currentList[position]
-            holder.nameTextView.text = "${item.firstName}: ${item.lastName}"
+            holder.nameTextView.text = "${item.firstName} ${item.lastName}"
+            holder.benefitType.text = "Benefit Type: ${item.beneType}"
+            holder.designation.text = "Designation: ${item.designationCode}"
             /*
                         if(item.convertedPrice == INVALID_PRICE){
                             holder.priceTextView.text = ""

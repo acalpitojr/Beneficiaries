@@ -1,4 +1,4 @@
-package com.calpito.beneficiaries.interfaces.repository
+package com.calpito.beneficiaries.repository
 
 import com.calpito.beneficiaries.interfaces.RepositoryInterface
 import com.calpito.beneficiaries.model.Beneficiary
@@ -115,7 +115,12 @@ class RepositoryImpl @Inject constructor() : RepositoryInterface {
             val listType = object : TypeToken<List<Beneficiary>>() {}.type
             // Parse the JSON string into a list of Beneficiary objects
             val beneficiaries: List<Beneficiary> = Gson().fromJson(testBeneficiaryJson, listType)
-            result.addAll(beneficiaries)
+
+            //lets make it more clear for the user.  Lets show in detail what the code means
+            result.addAll(beneficiaries.map { it.copy(designationCode = "${it.designationCode}-${interpretDesignationCode(it.designationCode)}") })
+
+
+
         } catch (e: Exception) {
             TODO("Not yet implemented")
             result = ArrayList()
@@ -123,4 +128,21 @@ class RepositoryImpl @Inject constructor() : RepositoryInterface {
 
         return result
     }
+
+    private fun interpretDesignationCode(code: String): String {
+        var result = ""
+        when (code) {
+            "P" ->{
+                result = "Primary"
+            }
+            "C" -> {
+                result = "Contingent"
+            }
+            else -> {
+                result = ""
+            }
+        }
+        return result
+    }
+
 }
