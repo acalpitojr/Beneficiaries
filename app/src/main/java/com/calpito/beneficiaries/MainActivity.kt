@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.calpito.beneficiaries.R
 import com.calpito.beneficiaries.databinding.ActivityMainBinding
 import com.calpito.beneficiaries.model.Beneficiary
+import com.calpito.beneficiaries.ui.customviews.BeneficiaryDetailView
+import com.calpito.beneficiaries.ui.customviews.BeneficiaryView
 import com.calpito.beneficiaries.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import ui.fragments.BeneficiaryDetailBottomSheet
@@ -105,7 +107,7 @@ class MainActivity : AppCompatActivity() {
               }*/
 
         //recycler view init
-        adapter = recyclerViewAdapter(supportFragmentManager)
+        adapter = recyclerViewAdapter()
         binding.rvConversions.layoutManager = LinearLayoutManager(this)
         binding.rvConversions.adapter = adapter
 
@@ -119,11 +121,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    class recyclerViewAdapter(private val fragmentManager: FragmentManager) :
-        RecyclerView.Adapter<recyclerViewAdapter.ConversionsViewHolder>() {
+    class recyclerViewAdapter :
+        RecyclerView.Adapter<recyclerViewAdapter.BeneficiaryViewHolder>() {
 
         /*set up views*/
-        inner class ConversionsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // ViewHolder class for the adapter.  This will hold our custom view
+        class BeneficiaryViewHolder(val beneficiaryView: BeneficiaryView) : RecyclerView.ViewHolder(beneficiaryView)
+
+        /*inner class ConversionsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             internal var nameTextView: TextView
             internal var benefitType: TextView
             internal var designation: TextView
@@ -133,7 +138,7 @@ class MainActivity : AppCompatActivity() {
                 benefitType = itemView.findViewById(R.id.tv_benefit_type) as TextView
                 designation = itemView.findViewById(R.id.tv_designation) as TextView
             }
-        }
+        }*/
 
         override fun getItemViewType(position: Int): Int {
             // depends on your problem
@@ -143,14 +148,25 @@ class MainActivity : AppCompatActivity() {
 
 
         //inflate the layout
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversionsViewHolder {
-            return ConversionsViewHolder(
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BeneficiaryViewHolder  {
+            // Create an instance of the custom view
+            val beneficiaryView = BeneficiaryView(parent.context).apply {
+                // Make sure BeneficiaryView has appropriate layout parameters
+                layoutParams = RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            //create the viewHolder with our customView
+            return BeneficiaryViewHolder(beneficiaryView)
+            /*return ConversionsViewHolder(
                 LayoutInflater.from(
                     parent.context
                 ).inflate(
                     R.layout.beneficiary_item, parent, false
                 )
-            )
+            )*/
         }
 
         override fun getItemCount(): Int {
@@ -158,30 +174,27 @@ class MainActivity : AppCompatActivity() {
         }
 
         /*set view values*/
-        override fun onBindViewHolder(holder: ConversionsViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: BeneficiaryViewHolder, position: Int) {
 
             val item = differ.currentList[position]
-            holder.nameTextView.text = "${item.firstName} ${item.lastName}"
-            holder.benefitType.text = "Benefit Type: ${item.beneType}"
-            holder.designation.text = "Designation: ${item.designationCode}"
+            holder.beneficiaryView.setBeneficiaryName("${item.firstName} ${item.lastName}")
+            holder.beneficiaryView.setBenefitType("Benefit Type: ${item.beneType}")
+            holder.beneficiaryView.setDesignation("Designation: ${item.designationCode}")
 
 
             holder.itemView.setOnClickListener {
                 // Create and setup the dialog
                 val context = holder.itemView.context
-                val dialog = Dialog(context)
-                dialog.setCanceledOnTouchOutside(true)
-                dialog.setContentView(R.layout.beneficiary_detail_dialog) // Ensure you have this layout
-                dialog.setTitle("Beneficiary Details")
 
-                // Set the details in the dialog. Make sure the layout has these TextViews.
-                dialog.findViewById<TextView>(R.id.dialog_name).text =
-                    "${item.firstName} ${item.lastName}"
-                dialog.findViewById<TextView>(R.id.dialog_ssn).text = "${item.socialSecurityNumber}"
-                dialog.findViewById<TextView>(R.id.dialog_dob).text = "${item.dateOfBirth}"
-                dialog.findViewById<TextView>(R.id.dialog_phone).text = "${item.phoneNumber}"
+                //load our custom view
+                val beneficiaryDetailView = BeneficiaryDetailView(context)
+                //data to display in our custom view
+                val name = "${item.firstName} ${item.lastName}"
+                val ssn = "${item.socialSecurityNumber}"
+                val dob = "${item.dateOfBirth}"
+                val phone = "${item.phoneNumber}"
 
-                //ADDRESS
+                //address
                 val addrLine1 = item.beneficiaryAddress.firstLineMailing
                 var addrLine2 = item.beneficiaryAddress.scndLineMailing
                 if(addrLine2 == null){
@@ -192,16 +205,22 @@ class MainActivity : AppCompatActivity() {
                 val city = "\n${item.beneficiaryAddress.city}"
                 val state = "\n${item.beneficiaryAddress.stateCode}"
                 val zipcode = "${item.beneficiaryAddress.zipCode}"
-                val coutry = "\n${item.beneficiaryAddress.country}"
-                dialog.findViewById<TextView>(R.id.dialog_address).text = "$addrLine1$addrLine2$city$state, $zipcode$coutry"
+                val country = "\n${item.beneficiaryAddress.country}"
+                val address = "$addrLine1$addrLine2$city$state, $zipcode$country"
 
+                //set all data into our custom view
+                beneficiaryDetailView.setDetails(name, ssn, dob, phone, address)
 
+                //CREATE THE DIALOG TO DISPLAY BENEFICIARY DETAILS
+                val dialog = Dialog(context)
+                dialog.setCanceledOnTouchOutside(true)
+                dialog.setContentView(beneficiaryDetailView) // Ensure you have this layout
 
-                // Adjust the dialog width to 90% of the screen width
+                // Adjust the dialog width to 95% of the screen width
                 val window = dialog.window
                 if (window != null) {
                     val displayMetrics = context.resources.displayMetrics
-                    val width = (displayMetrics.widthPixels * 0.9).toInt()
+                    val width = (displayMetrics.widthPixels * 0.95).toInt()
                     window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
                 }
 
