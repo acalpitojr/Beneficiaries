@@ -22,13 +22,12 @@ class BeneficiaryView @JvmOverloads constructor(
         // Inflate the layout
         val view = LayoutInflater.from(context).inflate(R.layout.beneficiary_item, this, true)
 
-        // Initialize your views
+        // Initialize views
         nameTextView = view.findViewById(R.id.tv_name)
         benefitTypeTextView = view.findViewById(R.id.tv_benefit_type)
         designationTextView = view.findViewById(R.id.tv_designation)
         arrowImageView = view.findViewById(R.id.iv_arrow) // Make sure to have an ID for your ImageView in XML
 
-        // Optional: If you have any custom attributes, initialize them here
     }
 
     fun setBeneficiaryName(name: String) {
@@ -43,5 +42,4 @@ class BeneficiaryView @JvmOverloads constructor(
         designationTextView.text = designation
     }
 
-    // Add other methods to set data or customize the view as needed
 }

@@ -20,8 +20,10 @@ class BeneficiaryDetailView @JvmOverloads constructor(
 
     init {
         orientation = VERTICAL
+        //inflate the layout
         LayoutInflater.from(context).inflate(R.layout.beneficiary_detail_dialog, this, true)
 
+        // Initialize views
         nameTextView = findViewById(R.id.dialog_name)
         ssnTextView = findViewById(R.id.dialog_ssn)
         dobTextView = findViewById(R.id.dialog_dob)
