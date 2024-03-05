@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         //mainViewModel.startGettingRates() //screen visible, lets make sure our rates are as up to date as possible
     }
+
     /*Screen invisible*/
     override fun onStop() {
         super.onStop()
@@ -53,55 +54,55 @@ class MainActivity : AppCompatActivity() {
      * Initializes the view components, sets up listeners, and starts observers for UI updates.
      */
     private fun initView() {
-       /* //VALUE TO CONVERT EDIT TEXT
-        binding.tiEtPrice.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not used in this example
-            }
+        /* //VALUE TO CONVERT EDIT TEXT
+         binding.tiEtPrice.addTextChangedListener(object : TextWatcher {
+             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                 // Not used in this example
+             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not used in this example
-            }
+             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                 // Not used in this example
+             }
 
-            override fun afterTextChanged(s: Editable?) {
-                val enteredText = s.toString()
-                println("User entered: $enteredText")
+             override fun afterTextChanged(s: Editable?) {
+                 val enteredText = s.toString()
+                 println("User entered: $enteredText")
 
-                //lets try to perform the conversion
-                var enteredValue = enteredText.toDoubleOrNull()
-                if (enteredValue == null) {
-                    enteredValue = INVALID_PRICE
-                }
-                //we need the currency the user selected as a base for the conversions
-                var selectedCurrency = mainViewModel.selectedCurrency.value
-                selectedCurrency?.let {
-                    //after we get this list, our observer will automatically populate the data
-                    mainViewModel.setPriceToConvert(enteredValue)
-                    mainViewModel.getListOfConversions(
-                        enteredValue, selectedCurrency
-                    )
-                }
+                 //lets try to perform the conversion
+                 var enteredValue = enteredText.toDoubleOrNull()
+                 if (enteredValue == null) {
+                     enteredValue = INVALID_PRICE
+                 }
+                 //we need the currency the user selected as a base for the conversions
+                 var selectedCurrency = mainViewModel.selectedCurrency.value
+                 selectedCurrency?.let {
+                     //after we get this list, our observer will automatically populate the data
+                     mainViewModel.setPriceToConvert(enteredValue)
+                     mainViewModel.getListOfConversions(
+                         enteredValue, selectedCurrency
+                     )
+                 }
 
 
-            }
-        })
-*/
+             }
+         })
+ */
         //SELECTED CURRENCY SPINNER
-      /*  binding.spinnerCurrency.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                ) {
-                    // Get the selected item from the adapter
-                    val selectedItem = parent?.getItemAtPosition(position).toString()
-                    mainViewModel.setSelectedCurrency(selectedItem)
-                    //println("Selected item: $selectedItem")
-                }
+        /*  binding.spinnerCurrency.onItemSelectedListener =
+              object : AdapterView.OnItemSelectedListener {
+                  override fun onItemSelected(
+                      parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                  ) {
+                      // Get the selected item from the adapter
+                      val selectedItem = parent?.getItemAtPosition(position).toString()
+                      mainViewModel.setSelectedCurrency(selectedItem)
+                      //println("Selected item: $selectedItem")
+                  }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // This is called when nothing is selected
-                }
-            }*/
+                  override fun onNothingSelected(parent: AdapterView<*>?) {
+                      // This is called when nothing is selected
+                  }
+              }*/
 
         //recycler view init
         adapter = recyclerViewAdapter(supportFragmentManager)
@@ -118,7 +119,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    class recyclerViewAdapter(private val fragmentManager: FragmentManager) : RecyclerView.Adapter<recyclerViewAdapter.ConversionsViewHolder>() {
+    class recyclerViewAdapter(private val fragmentManager: FragmentManager) :
+        RecyclerView.Adapter<recyclerViewAdapter.ConversionsViewHolder>() {
 
         /*set up views*/
         inner class ConversionsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -163,10 +165,10 @@ class MainActivity : AppCompatActivity() {
             holder.benefitType.text = "Benefit Type: ${item.beneType}"
             holder.designation.text = "Designation: ${item.designationCode}"
 
-           /* holder.itemView.setOnClickListener {
-                val bottomSheet = BeneficiaryDetailBottomSheet.newInstance(item)
-                bottomSheet.show(fragmentManager, bottomSheet.tag)
-            }*/
+            /* holder.itemView.setOnClickListener {
+                 val bottomSheet = BeneficiaryDetailBottomSheet.newInstance(item)
+                 bottomSheet.show(fragmentManager, bottomSheet.tag)
+             }*/
 
             holder.itemView.setOnClickListener {
                 // Create and setup the dialog
@@ -177,11 +179,26 @@ class MainActivity : AppCompatActivity() {
                 dialog.setTitle("Beneficiary Details")
 
                 // Set the details in the dialog. Make sure the layout has these TextViews.
-                dialog.findViewById<TextView>(R.id.dialog_name).text = "${item.firstName} ${item.lastName}"
-                dialog.findViewById<TextView>(R.id.dialog_ssn).text = "SSN: ${item.socialSecurityNumber}"
-                dialog.findViewById<TextView>(R.id.dialog_dob).text = "Date of Birth: ${item.dateOfBirth}"
-                dialog.findViewById<TextView>(R.id.dialog_phone).text = "Phone: ${item.phoneNumber}"
-                dialog.findViewById<TextView>(R.id.dialog_address).text = "Address: ${item.beneficiaryAddress.firstLineMailing}, ${item.beneficiaryAddress.city}"
+                dialog.findViewById<TextView>(R.id.dialog_name).text =
+                    "${item.firstName} ${item.lastName}"
+                dialog.findViewById<TextView>(R.id.dialog_ssn).text = "${item.socialSecurityNumber}"
+                dialog.findViewById<TextView>(R.id.dialog_dob).text = "${item.dateOfBirth}"
+                dialog.findViewById<TextView>(R.id.dialog_phone).text = "${item.phoneNumber}"
+
+                //ADDRESS
+                val addrLine1 = item.beneficiaryAddress.firstLineMailing
+                var addrLine2 = item.beneficiaryAddress.scndLineMailing
+                if(addrLine2 == null){
+                    addrLine2 = ""
+                } else {
+                    addrLine2 = "\n$addrLine2"
+                }
+                val city = "\n${item.beneficiaryAddress.city}"
+                val state = "\n${item.beneficiaryAddress.stateCode}"
+                val zipcode = "${item.beneficiaryAddress.zipCode}"
+                val coutry = "\n${item.beneficiaryAddress.country}"
+                dialog.findViewById<TextView>(R.id.dialog_address).text = "$addrLine1$addrLine2$city$state, $zipcode$coutry"
+
 
 
                 // Adjust the dialog width to 90% of the screen width
@@ -245,30 +262,30 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(beneficiaryList)
 
 
-          /*  when (currencyResponseResource.status) {
-                Status.SUCCESS -> {
-                    binding.progress.visibility = View.GONE
-                    binding.rvConversions.visibility = View.VISIBLE
+            /*  when (currencyResponseResource.status) {
+                  Status.SUCCESS -> {
+                      binding.progress.visibility = View.GONE
+                      binding.rvConversions.visibility = View.VISIBLE
 
-                    currencyResponseResource.data.let { res ->
-                        if (res != null) {
-                            adapter.submitList(res)
-                        }
-                    }
-                }
+                      currencyResponseResource.data.let { res ->
+                          if (res != null) {
+                              adapter.submitList(res)
+                          }
+                      }
+                  }
 
-                Status.LOADING -> {
-                    binding.progress.visibility = View.VISIBLE
-                    //binding.rvConversions.visibility = View.GONE
-                }
+                  Status.LOADING -> {
+                      binding.progress.visibility = View.VISIBLE
+                      //binding.rvConversions.visibility = View.GONE
+                  }
 
-                Status.ERROR -> {
-                    binding.progress.visibility = View.GONE
-                    binding.rvConversions.visibility = View.VISIBLE
-                    Snackbar.make(binding.rootView, "Something went wrong", Snackbar.LENGTH_SHORT)
-                        .show()
-                }
-            }*/
+                  Status.ERROR -> {
+                      binding.progress.visibility = View.GONE
+                      binding.rvConversions.visibility = View.VISIBLE
+                      Snackbar.make(binding.rootView, "Something went wrong", Snackbar.LENGTH_SHORT)
+                          .show()
+                  }
+              }*/
         })
     }
 
