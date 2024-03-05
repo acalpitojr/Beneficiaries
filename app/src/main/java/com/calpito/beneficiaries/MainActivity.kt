@@ -165,10 +165,6 @@ class MainActivity : AppCompatActivity() {
             holder.benefitType.text = "Benefit Type: ${item.beneType}"
             holder.designation.text = "Designation: ${item.designationCode}"
 
-            /* holder.itemView.setOnClickListener {
-                 val bottomSheet = BeneficiaryDetailBottomSheet.newInstance(item)
-                 bottomSheet.show(fragmentManager, bottomSheet.tag)
-             }*/
 
             holder.itemView.setOnClickListener {
                 // Create and setup the dialog
