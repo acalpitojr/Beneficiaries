@@ -1,5 +1,6 @@
 package com.calpito.beneficiaries
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -20,6 +22,7 @@ import com.calpito.beneficiaries.databinding.ActivityMainBinding
 import com.calpito.beneficiaries.model.Beneficiary
 import com.calpito.beneficiaries.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import ui.fragments.BeneficiaryDetailBottomSheet
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -101,7 +104,7 @@ class MainActivity : AppCompatActivity() {
             }*/
 
         //recycler view init
-        adapter = recyclerViewAdapter()
+        adapter = recyclerViewAdapter(supportFragmentManager)
         binding.rvConversions.layoutManager = LinearLayoutManager(this)
         binding.rvConversions.adapter = adapter
 
@@ -115,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    class recyclerViewAdapter : RecyclerView.Adapter<recyclerViewAdapter.ConversionsViewHolder>() {
+    class recyclerViewAdapter(private val fragmentManager: FragmentManager) : RecyclerView.Adapter<recyclerViewAdapter.ConversionsViewHolder>() {
 
         /*set up views*/
         inner class ConversionsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -159,13 +162,40 @@ class MainActivity : AppCompatActivity() {
             holder.nameTextView.text = "${item.firstName} ${item.lastName}"
             holder.benefitType.text = "Benefit Type: ${item.beneType}"
             holder.designation.text = "Designation: ${item.designationCode}"
-            /*
-                        if(item.convertedPrice == INVALID_PRICE){
-                            holder.priceTextView.text = ""
-                        } else {
-                            val roundedPrice = String.format("%.${Constants.PRICE_DECIMAL_PRECISION}f", item.convertedPrice)
-                            holder.priceTextView.text = "${roundedPrice}"
-                        }*/
+
+           /* holder.itemView.setOnClickListener {
+                val bottomSheet = BeneficiaryDetailBottomSheet.newInstance(item)
+                bottomSheet.show(fragmentManager, bottomSheet.tag)
+            }*/
+
+            holder.itemView.setOnClickListener {
+                // Create and setup the dialog
+                val context = holder.itemView.context
+                val dialog = Dialog(context)
+                dialog.setCanceledOnTouchOutside(true)
+                dialog.setContentView(R.layout.beneficiary_detail_dialog) // Ensure you have this layout
+                dialog.setTitle("Beneficiary Details")
+
+                // Set the details in the dialog. Make sure the layout has these TextViews.
+                dialog.findViewById<TextView>(R.id.dialog_name).text = "${item.firstName} ${item.lastName}"
+                dialog.findViewById<TextView>(R.id.dialog_ssn).text = "SSN: ${item.socialSecurityNumber}"
+                dialog.findViewById<TextView>(R.id.dialog_dob).text = "Date of Birth: ${item.dateOfBirth}"
+                dialog.findViewById<TextView>(R.id.dialog_phone).text = "Phone: ${item.phoneNumber}"
+                dialog.findViewById<TextView>(R.id.dialog_address).text = "Address: ${item.beneficiaryAddress.firstLineMailing}, ${item.beneficiaryAddress.city}"
+
+
+                // Adjust the dialog width to 90% of the screen width
+                val window = dialog.window
+                if (window != null) {
+                    val displayMetrics = context.resources.displayMetrics
+                    val width = (displayMetrics.widthPixels * 0.9).toInt()
+                    window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+                }
+
+                // Show the dialog
+                dialog.show()
+            }
+
 
         }
 

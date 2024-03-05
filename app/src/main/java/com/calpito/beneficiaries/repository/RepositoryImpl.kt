@@ -2,6 +2,7 @@ package com.calpito.beneficiaries.repository
 
 import com.calpito.beneficiaries.interfaces.RepositoryInterface
 import com.calpito.beneficiaries.model.Beneficiary
+import com.calpito.beneficiaries.utils.Utilities.convertBirthdayFormat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.Provides
@@ -117,8 +118,16 @@ class RepositoryImpl @Inject constructor() : RepositoryInterface {
             val beneficiaries: List<Beneficiary> = Gson().fromJson(testBeneficiaryJson, listType)
 
             //lets make it more clear for the user.  Lets show in detail what the code means
-            result.addAll(beneficiaries.map { it.copy(designationCode = "${it.designationCode}-${interpretDesignationCode(it.designationCode)}") })
-
+            result.addAll(beneficiaries.map {
+                it.copy(
+                    designationCode = "${it.designationCode}-${
+                        interpretDesignationCode(
+                            it.designationCode
+                        )
+                    }",
+                    dateOfBirth = "${convertBirthdayFormat(it.dateOfBirth)}"
+                )
+            })
 
 
         } catch (e: Exception) {
@@ -132,12 +141,14 @@ class RepositoryImpl @Inject constructor() : RepositoryInterface {
     private fun interpretDesignationCode(code: String): String {
         var result = ""
         when (code) {
-            "P" ->{
+            "P" -> {
                 result = "Primary"
             }
+
             "C" -> {
                 result = "Contingent"
             }
+
             else -> {
                 result = ""
             }
