@@ -3,14 +3,14 @@ package com.calpito.beneficiaries.repository
 import com.calpito.beneficiaries.interfaces.RepositoryInterface
 import com.calpito.beneficiaries.model.Beneficiary
 import com.calpito.beneficiaries.utils.Utilities.convertBirthdayFormat
+import com.calpito.beneficiaries.utils.Utilities.interpretDesignationCode
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import dagger.Provides
 import javax.inject.Inject
 
 
 class RepositoryImpl @Inject constructor() : RepositoryInterface {
-    //HARDCODED BENEFICARY DATA
+    //HARDCODED BENEFICIARY DATA
     val testBeneficiaryJson = """[
   {
     "lastName": "Smith",
@@ -105,19 +105,27 @@ class RepositoryImpl @Inject constructor() : RepositoryInterface {
 ]"""
 
 
-    /*WE CURRENTLY HAVE TEST DATA, WHICH IS A HARDCODED JSON.
-        * In a real application, we would typically get this list from an API call using Retrofit.
-        * */
+    /**
+     * Parses a JSON string containing beneficiary information into a list of [Beneficiary] objects.
+     * For each beneficiary, this function modifies the designation code to append a descriptive text
+     * and formats the date of birth into a more user-friendly format.
+     *
+     * @return An [ArrayList] of [Beneficiary] objects with modified designation codes and formatted dates of birth.
+     */
     override fun getBeneficiaryList(): ArrayList<Beneficiary> {
-        val result: ArrayList<Beneficiary> = ArrayList()
+        var result: ArrayList<Beneficiary> = ArrayList()
 
         try {
             // Create a type token for a list of Beneficiary objects
+            /*WE CURRENTLY HAVE TEST DATA, WHICH IS A HARDCODED JSON.
+            * In a real application, we would typically get this list from an API call using Retrofit.
+            * */
             val listType = object : TypeToken<List<Beneficiary>>() {}.type
             // Parse the JSON string into a list of Beneficiary objects
             val beneficiaries: List<Beneficiary> = Gson().fromJson(testBeneficiaryJson, listType)
 
-            //lets make it more clear for the user.  Lets show in detail what the code means
+            //lets make it more clear for the user.  Lets show in detail what the code means,
+            //and lets format the dob to something more friendly
             result.addAll(beneficiaries.map {
                 it.copy(
                     designationCode = "${it.designationCode}-${
@@ -131,28 +139,9 @@ class RepositoryImpl @Inject constructor() : RepositoryInterface {
 
 
         } catch (e: Exception) {
-            TODO("Not yet implemented")
             result = ArrayList()
         }
 
-        return result
-    }
-
-    private fun interpretDesignationCode(code: String): String {
-        var result = ""
-        when (code) {
-            "P" -> {
-                result = "Primary"
-            }
-
-            "C" -> {
-                result = "Contingent"
-            }
-
-            else -> {
-                result = ""
-            }
-        }
         return result
     }
 

@@ -12,11 +12,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    /*@Provides
-    @Singleton
-    fun provideMealApi(mealApi: MealApiImpl):MealApiInterface{
-        return mealApi
-    }*/
 
     @Provides
     @Singleton
@@ -24,22 +19,4 @@ object AppModule {
         return repository
     }
 
-   /* @Provides
-    @Singleton
-    fun provideRealmConfig(): RealmConfiguration {
-        val realmConfig = RealmConfiguration.Builder(
-            schema = setOf(
-                MealCategoryRealm::class,
-            ),
-        )
-            .deleteRealmIfMigrationNeeded()
-            .build()
-        return realmConfig
-    }*/
-
-    /*@Provides
-    @Singleton
-    fun provideLocalDb(localDb:LocalDbImpl):LocalDbInterface{
-        return localDb
-    }*/
 }

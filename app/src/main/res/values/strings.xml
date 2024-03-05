@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Beneficiaries</string>
+    <string name="beneficiaries">Beneficiaries</string>
+    <string name="show_details_button">show details button</string>
+    <string name="beneficiary_details">Beneficiary Details</string>
+    <string name="ssn">SSN</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="beneficiaries_splash">{ Beneficiaries }</string>
 </resources>

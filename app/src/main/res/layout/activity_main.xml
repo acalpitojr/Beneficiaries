@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.activity.MainActivity">
 
     <!--todo add a search field so user can filter results-->
 
@@ -20,7 +20,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
         android:gravity="center_horizontal"
-        android:text="Beneficiaries"
+        android:text="@string/beneficiaries"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/rv_conversions"
