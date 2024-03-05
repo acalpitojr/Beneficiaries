@@ -8,7 +8,7 @@ import android.widget.TextView
 import android.widget.ImageView
 import com.calpito.beneficiaries.R
 
-
+/*Custom View Class for showing beneficiary data*/
 class BeneficiaryView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : CardView(context, attrs, defStyleAttr) {
